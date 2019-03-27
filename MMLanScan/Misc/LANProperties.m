@@ -34,12 +34,11 @@
         temp_addr = interfaces;
         
         while(temp_addr != NULL) {
-            
             // check if interface is en0 which is the wifi connection on the iPhone
             if(temp_addr->ifa_addr->sa_family == AF_INET) {
-                
-                if([[NSString stringWithUTF8String:temp_addr->ifa_name] isEqualToString:@"en0"]) {
-                    
+                NSLog(@"FOUND interface: %s, %s", temp_addr->ifa_name, inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr));
+                NSString *interfaceName = [NSString stringWithUTF8String:temp_addr->ifa_name];
+                if([interfaceName isEqualToString:@"bridge100"] || [interfaceName isEqualToString:@"en0"] ) {
                     localDevice.ipAddress = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr)];
                     localDevice.subnetMask = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_netmask)->sin_addr)];
                     localDevice.hostname = [self getHostFromIPAddress:localDevice.ipAddress];
